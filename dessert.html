@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Where to eat</title>
+    <link rel="stylesheet" href="css/dessert.css" />
+  </head>
+  <body>
+    <div id="dessertquestion">aha manta mangaun dayun cuhh???</div>
+
+    <form id="dessert-form">
+      <div class="dessert-selection">
+        <div class="dessert-item">
+          <img src="food/sam.jpg" alt="samgyup" />
+          <label><input type="checkbox" name="dessert" value="samgyup" />Samgyup</label>
+        </div>
+        <div class="dessert-item">
+          <img src="food/coffe.jpeg" alt="coffee" />
+          <label><input type="checkbox" name="dessert" value="coffee" />Coffee Shop</label>
+        </div>
+        <div class="dessert-item">
+          <img src="food/street.jpg" alt="streetfood" />
+          <label><input type="checkbox" name="dessert" value="streetfood" />Street Foods</label>
+        </div>
+        <div class="dessert-item">
+          <img src="food/ice.jpg" alt="icecream" />
+          <label><input type="checkbox" name="dessert" value="icecream" />Ice Cream</label>
+        </div>
+        <div class="dessert-item">
+          <img src="food/ramens.jpg" alt="ramen" />
+          <label><input type="checkbox" name="dessert" value="ramen" />Ramen</label>
+        </div>
+        <div class="dessert-item">
+          <img src="food/japs.jpg" alt="japanese" />
+          <label><input type="checkbox" name="dessert" value="japanese" />Japanese Resto</label>
+        </div>
+      </div>
+      <button class="button" type="submit">Next</button>
+    </form>
+
+    <script type="module">
+      // Import the Supabase client
+      import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
+
+      // Supabase project URL and public key (replace with your own)
+      const supabaseUrl = 'https://mlrreqemjmgqtzljexej.supabase.co';
+      const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1scnJlcWVtam1ncXR6bGpleGVqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MTcwMjkxMDIsImV4cCI6MjAzMjYwNTEwMn0.0JpLhe2UbQxGuQAbZf_su02lHOgnNIJqgZPGnQovYhQ';
+
+      // Create Supabase client
+      const supabase = createClient(supabaseUrl, supabaseKey);
+
+      // Handle form submission
+      document.getElementById('dessert-form').addEventListener('submit', async (event) => {
+        event.preventDefault(); // Prevent the form from reloading the page
+
+        // Get all the selected checkboxes
+        const selectedFood = Array.from(document.querySelectorAll('input[name="dessert"]:checked'))
+          .map((checkbox) => checkbox.value);
+
+        if (selectedFood.length === 0) {
+          alert('Please select at least one food option.');
+          return;
+        }
+
+        // Insert the selected food into the database
+        const { data, error } = await supabase
+          .from('food_choices') // Replace 'food_choices' with your table name
+          .insert([{ selected_food: selectedFood }]);
+
+        if (error) {
+          console.error('Error inserting food choices:', error.message);
+        } else {
+          console.log('Food choices inserted successfully:', data);
+          // Redirect to the next page
+          window.location.href = 'lastpage.html';
+        }
+      });
+    </script>
+  </body>
+</html>
